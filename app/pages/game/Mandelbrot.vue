@@ -6,23 +6,20 @@
                     <h3><label id="runTime" style="align-content: center"></label></h3>
                     <input
                         type="button"
-                        class="button"
-                        style="width: 50px; height: 25px; margin: 20px"
                         value="+"
+                        style="width: 50px; height: 25px; margin: 20px; background: orange"
                         @click="zoomIn"
                     />
                     <input
                         type="button"
-                        class="button"
-                        style="width: 100px; height: 25px; margin: 20px"
                         value="Reset"
+                        style="width: 100px; height: 25px; margin: 20px; background: orange"
                         @click="reset"
                     />
                     <input
                         type="button"
-                        class="button"
-                        style="width: 50px; height: 25px; margin: 20px"
                         value="-"
+                        style="width: 50px; height: 25px; margin: 20px; background: orange"
                         @click="zoomOut"
                     />
                     <h2>Mandelbrot Set</h2>

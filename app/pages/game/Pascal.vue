@@ -1,5 +1,9 @@
 <template>
     <div>
+        <label>
+            <input type="checkbox" v-model="runMode" />
+            Running
+        </label>
         <canvas
             id="cpxCanvas"
             width="800"
@@ -18,8 +22,7 @@ useHead({
     title: "Pascal",
 })
 import { ref, onMounted } from "vue"
-const options = ref(["Pause"])
-const value = ref("")
+const runMode = ref(true)
 var cv: HTMLCanvasElement
 var cx: CanvasRenderingContext2D
 var WIDTH: number
@@ -319,9 +322,7 @@ async function calculate() {
         }
         paint()
         await new Promise((r) => setTimeout(r, 10))
-        while (value.value == "Pause") {
-            await new Promise((r) => setTimeout(r, 1000))
-        }
+        while (!runMode.value) await new Promise((r) => setTimeout(r, 1000))
     }
 }
 
