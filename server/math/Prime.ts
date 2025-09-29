@@ -12,19 +12,18 @@ export default class Prime {
         try {
             const logText = "Get primes storage"
             console.time(logText)
-            useStorage("redis")
-                .getItem("primes")
-                .then((primes) => {
-                    if (primes) {
-                        const p = primes as string[]
-                        Prime.primeArray = new Array(p.length)
-                        for (let i = 0; i < p.length; i++) Prime.primeArray[i] = parseInt(p[i])
-                        Prime.n = Prime.primeArray.length
-                    } else {
-                        Prime.createPrimeArray(100)
-                    }
-                    console.timeEnd(logText)
-                })
+            const redis = useStorage(process.env.REDIS_HOST ? "redis" : "data")
+            redis.getItem("primes").then((primes) => {
+                if (primes) {
+                    const p = primes as string[]
+                    Prime.primeArray = new Array(p.length)
+                    for (let i = 0; i < p.length; i++) Prime.primeArray[i] = parseInt(p[i])
+                    Prime.n = Prime.primeArray.length
+                } else {
+                    Prime.createPrimeArray(100)
+                }
+                console.timeEnd(logText)
+            })
         } catch (err) {
             console.log("Redis data Error!", err)
         }
@@ -138,9 +137,11 @@ export default class Prime {
             lp += 2
             if (Prime.findDivisor(lp) == Prime.ONE) {
                 if (Prime.primeArray.length === Prime.n) {
-                    if (Prime.n < 9999)
+                    if (Prime.n < 9999) {
                         // prevent storage overflow
-                        useStorage("redis").setItem("primes", Prime.primeArray)
+                        const redis = useStorage(process.env.REDIS_HOST ? "redis" : "data")
+                        redis.setItem("primes", Prime.primeArray)
+                    }
                     // console.log('update primes redis', Prime.n)
                     Prime.extendArray()
                 }
@@ -198,7 +199,7 @@ export default class Prime {
             "prime^2=",
             n2.toString(),
             "count=",
-            count
+            count,
         )
         return count
     }

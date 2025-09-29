@@ -7,7 +7,7 @@ export default defineNuxtConfig({
     css: ["@/assets/styles.css"],
     runtimeConfig: {
         public: {
-            buildTime: new Date().getTime()
+            buildTime: new Date().getTime(),
         },
         session: {
             maxAge: 60 * 5, // 5 minutes
@@ -16,14 +16,15 @@ export default defineNuxtConfig({
     },
     nitro: {
         storage: {
+            data: {
+                driver: "memory",
+            },
             redis: {
                 driver: "redis",
-                port: parseInt(process.env.REDIS_PORT || "18868"),
-                host:
-                    process.env.REDIS_HOST ||
-                    "redis-18868.c1.ap-southeast-1-1.ec2.redns.redis-cloud.com",
+                port: process.env.REDIS_PORT,
+                host: process.env.REDIS_HOST,
                 username: process.env.REDIS_USER || "default",
-                password: process.env.REDIS_PASSWORD || "m1gT9dR2bwA8dwXhj9mCxLt0lq4Uwuut",
+                password: process.env.REDIS_PASSWORD,
                 db: 0,
             },
         },
