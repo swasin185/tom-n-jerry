@@ -12,7 +12,7 @@ export default class Prime {
         try {
             const logText = "Get primes storage"
             console.time(logText)
-            const redis = useStorage(process.env.REDIS_HOST ? "redis" : "data")
+            const redis = useStorage("data")
             redis.getItem("primes").then((primes) => {
                 if (primes) {
                     const p = primes as string[]
@@ -139,7 +139,7 @@ export default class Prime {
                 if (Prime.primeArray.length === Prime.n) {
                     if (Prime.n < 9999) {
                         // prevent storage overflow
-                        const redis = useStorage(process.env.REDIS_HOST ? "redis" : "data")
+                        const redis = useStorage("data")
                         redis.setItem("primes", Prime.primeArray)
                     }
                     // console.log('update primes redis', Prime.n)

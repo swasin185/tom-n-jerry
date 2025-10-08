@@ -17,15 +17,8 @@ export default defineNuxtConfig({
     nitro: {
         storage: {
             data: {
-                driver: "memory",
-            },
-            redis: {
-                driver: "redis",
-                port: process.env.REDIS_PORT,
-                host: process.env.REDIS_HOST,
-                username: process.env.REDIS_USER || "default",
-                password: process.env.REDIS_PASSWORD,
-                db: 0,
+                driver: process.env.REDIS_URL? "redis" : "memory",
+                url: process.env.REDIS_URL || "",
             },
         },
     },
