@@ -8,4 +8,5 @@ export default defineNitroPlugin((nitroApp) => {
             : this.toLocaleString("sv-SE")
     }
     Prime.initialize()
+    Prime.createPrimeArray(100)
 })

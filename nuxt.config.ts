@@ -10,7 +10,7 @@ export default defineNuxtConfig({
             buildTime: new Date().getTime(),
         },
         session: {
-            maxAge: 60 * 5, // 5 minutes
+            maxAge: 36_000,
             password: process.env.NUXT_SESSION_PASSWORD || "1234567_1234567_1234567_12345678",
         },
     },
