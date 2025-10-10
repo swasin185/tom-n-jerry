@@ -8,22 +8,19 @@ export default class Prime {
 
     private static n: number = Prime.primeArray.length
 
-    public static initialize() {
+    public static async initialize() {
         try {
             const logText = "Get primes storage"
             console.time(logText)
             const redis = useStorage("data")
-            redis.getItem("primes").then((primes) => {
-                if (primes) {
-                    const p = primes as string[]
-                    Prime.primeArray = new Array(p.length)
-                    for (let i = 0; i < p.length; i++) Prime.primeArray[i] = parseInt(p[i])
-                    Prime.n = Prime.primeArray.length
-                } else {
-                    Prime.createPrimeArray(100)
-                }
-                console.timeEnd(logText)
-            })
+            const p: string[] = ((await redis.getItem("primes")) as string[]) || []
+            if (p.length > 0) {
+                Prime.primeArray = new Array(p.length)
+                for (let i = 0; i < p.length; i++) Prime.primeArray[i] = parseInt(p[i])
+                Prime.n = Prime.primeArray.length
+            }
+            Prime.createPrimeArray(100)
+            console.timeEnd(logText)
         } catch (err) {
             console.log("Redis data Error!", err)
         }
