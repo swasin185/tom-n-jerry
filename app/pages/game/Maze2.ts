@@ -1,19 +1,19 @@
 export default class Maze2 {
-    public static GOLDEN: number = 1.618034
-    public static NONE: number = 0
-    public static NORTH: number = 1
-    public static WEST: number = 2
-    public static SOUTH: number = 4
-    public static EAST: number = 8
+    public static readonly GOLDEN: number = 1.618034
+    public static readonly NONE: number = 0
+    public static readonly NORTH: number = 1
+    public static readonly WEST: number = 2
+    public static readonly SOUTH: number = 4
+    public static readonly EAST: number = 8
 
-    public static END = -2
-    public static WALL = -1
-    public static WAY = 0
+    public static readonly END = -2
+    public static readonly WALL = -1
+    public static readonly WAY = 0
 
-    private static RED = 0
-    private static GREEN = 1
-    private static BLUE = 2
-    private static ALPHA = 3
+    private static readonly RED = 0
+    private static readonly GREEN = 1
+    private static readonly BLUE = 2
+    private static readonly ALPHA = 3
 
     private size: number = 0
     private cvs: HTMLCanvasElement
@@ -64,12 +64,12 @@ export default class Maze2 {
         this.ctx = this.cvs.getContext("2d") as CanvasRenderingContext2D
         this.ctx.fillStyle = this.cvs.style.backgroundColor
         this.ctx.strokeStyle = this.cvs.style.color
-        this.bgColor[Maze2.RED] = parseInt(this.ctx.fillStyle.substring(1, 3), 16)
-        this.bgColor[Maze2.GREEN] = parseInt(this.ctx.fillStyle.substring(3, 5), 16)
-        this.bgColor[Maze2.BLUE] = parseInt(this.ctx.fillStyle.substring(5, 7), 16)
-        this.wayColor[Maze2.RED] = parseInt(this.ctx.strokeStyle.substring(1, 3), 16)
-        this.wayColor[Maze2.GREEN] = parseInt(this.ctx.strokeStyle.substring(3, 5), 16)
-        this.wayColor[Maze2.BLUE] = parseInt(this.ctx.strokeStyle.substring(5, 7), 16)
+        this.bgColor[Maze2.RED] = Number.parseInt(this.ctx.fillStyle.substring(1, 3), 16)
+        this.bgColor[Maze2.GREEN] = Number.parseInt(this.ctx.fillStyle.substring(3, 5), 16)
+        this.bgColor[Maze2.BLUE] = Number.parseInt(this.ctx.fillStyle.substring(5, 7), 16)
+        this.wayColor[Maze2.RED] = Number.parseInt(this.ctx.strokeStyle.substring(1, 3), 16)
+        this.wayColor[Maze2.GREEN] = Number.parseInt(this.ctx.strokeStyle.substring(3, 5), 16)
+        this.wayColor[Maze2.BLUE] = Number.parseInt(this.ctx.strokeStyle.substring(5, 7), 16)
         this.init(size)
     }
 
@@ -110,7 +110,7 @@ export default class Maze2 {
             this.maxWalk = 0
             this.startArea = new Coordinate(
                 Math.floor(this.size / 4) * 2 + 1,
-                Math.floor(this.size / 4) * 2 + 1
+                Math.floor(this.size / 4) * 2 + 1,
             )
             this.paintMaze()
             this.running = false
@@ -170,14 +170,14 @@ export default class Maze2 {
                     imgArr,
                     runner.getLocation().i,
                     runner.getLocation().j,
-                    this.runnerColor
+                    this.runnerColor,
                 )
             else
                 this.paintArea(
                     imgArr,
                     runner.getLocation().i,
                     runner.getLocation().j,
-                    this.endColor
+                    this.endColor,
                 )
         })
 
@@ -255,7 +255,7 @@ export default class Maze2 {
 
             this.finishArea = new Coordinate(
                 Math.floor((Math.random() * this._size_2) / 2) * 2 + 1,
-                Math.floor((Math.random() * this._size_2) / 2) * 2 + 1
+                Math.floor((Math.random() * this._size_2) / 2) * 2 + 1,
             )
 
             connect -= 0.5
@@ -408,7 +408,7 @@ export default class Maze2 {
                         if (runner.getDirection() == Maze2.NONE)
                             // ถ้ากลับจนสุดแล้ว ให้เปลี่ยนไปเริ่มที่จุดพักต่อไป
                             this.addNewRunner(
-                                this.map[runner.getLocation().i]![runner.getLocation().j]!
+                                this.map[runner.getLocation().i]![runner.getLocation().j]!,
                             )
                         runner.move()
                     }
@@ -419,7 +419,7 @@ export default class Maze2 {
                         "Runner",
                         Runner.getMaxId(),
                         "Avg.Move",
-                        Math.round(Runner.getTotalDistance() / Runner.getMaxId())
+                        Math.round(Runner.getTotalDistance() / Runner.getMaxId()),
                     )
                     const path = this.createPath(this.finishArea)
                     this.reset()
@@ -444,7 +444,7 @@ export default class Maze2 {
                 "Runner",
                 Runner.getMaxId(),
                 "Avg.Move",
-                Math.round(Runner.getTotalDistance() / Runner.getMaxId())
+                Math.round(Runner.getTotalDistance() / Runner.getMaxId()),
             )
             this.paintMaze()
             this.paintPath()
@@ -620,28 +620,16 @@ class Runner {
                 }
                 while ((this.direction & direct) == Maze2.NONE) this.direction >>= 1
             } else this.direction = Maze2.NONE
-        } else {
-            if (
-                this.direction == Maze2.NORTH &&
-                map[this.locate.i - 1]![this.locate.j] != Maze2.WALL
-            )
-                this.direction = Maze2.NONE
-            else if (
-                this.direction == Maze2.WEST &&
-                map[this.locate.i]![this.locate.j - 1] != Maze2.WALL
-            )
-                this.direction = Maze2.NONE
-            else if (
-                this.direction == Maze2.SOUTH &&
-                map[this.locate.i + 1]![this.locate.j] != Maze2.WALL
-            )
-                this.direction = Maze2.NONE
-            else if (
-                this.direction == Maze2.EAST &&
-                map[this.locate.i]![this.locate.j + 1] != Maze2.WALL
-            )
-                this.direction = Maze2.NONE
-        }
+        } else if (
+            (this.direction == Maze2.NORTH &&
+                map[this.locate.i - 1]![this.locate.j] != Maze2.WALL) ||
+            (this.direction == Maze2.WEST &&
+                map[this.locate.i]![this.locate.j - 1] != Maze2.WALL) ||
+            (this.direction == Maze2.SOUTH &&
+                map[this.locate.i + 1]![this.locate.j] != Maze2.WALL) ||
+            (this.direction == Maze2.EAST && map[this.locate.i]![this.locate.j + 1] != Maze2.WALL)
+        )
+            this.direction = Maze2.NONE
     }
 
     public routeBack(): void {

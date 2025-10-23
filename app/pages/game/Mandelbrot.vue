@@ -3,7 +3,7 @@
         <tbody>
             <tr>
                 <td width="400" style="vertical-align: top; padding: 20px">
-                    <h3><label id="runTime" style="align-content: center"></label></h3>
+                    <h3><label id="runTime" style="align-content: center">0</label></h3>
                     <input
                         type="button"
                         value="+"

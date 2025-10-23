@@ -17,8 +17,8 @@ export default defineNuxtConfig({
     nitro: {
         storage: {
             data: {
-                driver: process.env.REDIS_URL? "redis" : "memory",
-                url: process.env.REDIS_URL || "",
+                driver: process.env.REDIS_URL ? "redis" : "memory",
+                url: process.env.REDIS_URL,
             },
         },
     },

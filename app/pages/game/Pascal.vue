@@ -23,11 +23,11 @@ useHead({
 })
 import { ref, onMounted } from "vue"
 const runMode = ref(true)
-var cv: HTMLCanvasElement
-var cx: CanvasRenderingContext2D
-var WIDTH: number
-var HEIGHT: number
-var MID_WIDTH: number
+let cv: HTMLCanvasElement
+let cx: CanvasRenderingContext2D
+let WIDTH: number
+let HEIGHT: number
+let MID_WIDTH: number
 const COLORS = ["magenta", "cyan", "red", "lime", "yellow", "orange", "blue"]
 const PI2 = Math.PI * 2
 const PI_2 = Math.PI / 2
@@ -35,7 +35,7 @@ const GRAVITY = 0.1
 const RESISTANCE = 0.6
 const n = 16
 const allPins: Pin[] = new Array((n * n + n) / 2)
-var pin_n: number = 0
+let pin_n: number = 0
 const boxs: Box[] = new Array((n * n + n) / 2)
 const balls: Ball[] = new Array(0)
 const pArr: number[] = new Array((n * n + n) / 2)
@@ -157,9 +157,11 @@ class Ball extends Sprite {
         if (reflectAngle < 0) reflectAngle += Math.PI
         else reflectAngle -= Math.PI
         this.setDirection(reflectAngle)
-        if (this.dx != 0) {
-            if (this.dx > 0.2 || this.dx < -0.2) this.dx *= RESISTANCE + Math.random() / 10
-        } else this.dx = Math.random() * 2 - 1 // ถ้าตกลงมาแนวดิ่งด้วยมุม +Pi/2 -Pi/2 ให้เบี่ยงออกซ้ายขวา +-1
+        if (this.dx > 0.2 || this.dx < -0.2) 
+            this.dx *= RESISTANCE + Math.random() / 10
+        else if (this.dx === 0)
+            this.dx = Math.random() * 2 - 1 // ถ้าตกลงมาแนวดิ่งด้วยมุม +Pi/2 -Pi/2 ให้เบี่ยงออกซ้ายขวา +-1    
+
         if (this.dy > 0.2) this.dy *= RESISTANCE
     }
     getCollideAngle(obj: Sprite): number {
@@ -326,32 +328,32 @@ async function calculate() {
     }
 }
 
-// function paintLine() {
-//     let x = MID_WIDTH;
-//     let y = 20;
-//     let size = 45;
-//     cx.shadowBlur = 10;
-//     cx.shadowColor = 'blue';
-//     let mid = size / 2;
-//     size *= Math.sqrt(3) / 2;
-//     let six = mid / Math.cos(Math.PI / 6);
-//     for (let i = 0; i < n; i++) {
-//         x = MID_WIDTH - (i * mid);
-//         for (let j = 0; j <= i; j++) {
-//             cx.strokeStyle = 'grey';
-//             cx.beginPath();
-//             cx.moveTo(x - mid, y + size);
-//             cx.lineTo(x - mid, y + size - six);
-//             cx.lineTo(x, y);
-//             cx.moveTo(x + mid, y + size);
-//             cx.lineTo(x + mid, y + size - six);
-//             cx.lineTo(x, y);
-//             cx.stroke();
-//             x += mid * 2;
-//         }
-//         y += size;
-//     }
-// }
+function paintLine() {
+    let x = MID_WIDTH;
+    let y = 20;
+    let size = 45;
+    cx.shadowBlur = 10;
+    cx.shadowColor = 'blue';
+    let mid = size / 2;
+    size *= Math.sqrt(3) / 2;
+    let six = mid / Math.cos(Math.PI / 6);
+    for (let i = 0; i < n; i++) {
+        x = MID_WIDTH - (i * mid);
+        for (let j = 0; j <= i; j++) {
+            cx.strokeStyle = 'grey';
+            cx.beginPath();
+            cx.moveTo(x - mid, y + size);
+            cx.lineTo(x - mid, y + size - six);
+            cx.lineTo(x, y);
+            cx.moveTo(x + mid, y + size);
+            cx.lineTo(x + mid, y + size - six);
+            cx.lineTo(x, y);
+            cx.stroke();
+            x += mid * 2;
+        }
+        y += size;
+    }
+}
 
 function paint() {
     cx.clearRect(0, 0, cv.width, cv.height)
