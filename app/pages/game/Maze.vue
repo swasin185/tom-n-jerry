@@ -95,10 +95,13 @@
 </template>
 
 <script lang="ts" setup>
+
+// definePageMeta({ keepalive: true })
+
 useHead({
     title: "Maze",
 })
-import { onMounted } from "vue"
+
 import Maze2 from "./Maze2"
 
 let sizeInput: HTMLInputElement

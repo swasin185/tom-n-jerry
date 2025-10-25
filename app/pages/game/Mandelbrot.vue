@@ -85,10 +85,20 @@
 </template>
 
 <script lang="ts" setup>
+
+// definePageMeta({ keepalive: true })
+
 useHead({
     title: "Mandelbrot & Julia",
 })
-import { onMounted } from "vue"
+
+onMounted(() => {
+    console.log("Mandel Mounted (Cache Miss)")
+})
+
+onActivated(() => {
+    console.log("Mandel Activated (Cache Hit)")
+})
 
 class ComplexNumber {
     private re: number

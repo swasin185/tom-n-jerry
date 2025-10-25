@@ -6,7 +6,7 @@
                 :items="items"
                 class="data-[orientation=vertical]:w-64 m-2"
             />
-            <NuxtPage class="w-[1200px] h-[800px] overflow-auto" />
+            <NuxtPage />
         </div>
     </UApp>
 </template>
@@ -17,9 +17,14 @@ const items = ref<NavigationMenuItem[][]>([
     [
         {
             label: "Setting",
-            icon: "i-lucide-settings", 
+            icon: "i-lucide-settings",
             children: [
-                { label: "Login/out", icon: "i-lucide-log-in",  tooltip: { text:"ป้อนชื่อผู้ใช้และรหัสผ่าน" }, to: "/login" },
+                {
+                    label: "Login/out",
+                    icon: "i-lucide-log-in",
+                    tooltip: { text: "ป้อนชื่อผู้ใช้และรหัสผ่าน" },
+                    to: "/login",
+                },
                 { label: "Reload", icon: "i-lucide-refresh-cw", to: "/" },
                 {
                     label: "สถานะเซิฟเวอร์",
@@ -27,19 +32,19 @@ const items = ref<NavigationMenuItem[][]>([
                     to: "/setting/ServerStatus",
                 },
                 { label: "ผู้ใช้", icon: "i-lucide-users" },
-                { label: "สิทธิการใช้งาน", icon: "i-lucide-shield-check" }, 
+                { label: "สิทธิการใช้งาน", icon: "i-lucide-shield-check" },
             ],
         },
         {
             label: "Game",
-            icon: "i-lucide-gamepad-2", 
+            icon: "i-lucide-gamepad-2",
             children: [
                 {
                     label: "Mandelbrot",
-                    icon: "i-lucide-infinity", 
+                    icon: "i-lucide-infinity",
                     to: "/game/Mandelbrot",
                 },
-                { label: "Maze", icon: "i-lucide-brick-wall", to: "/game/Maze" }, 
+                { label: "Maze", icon: "i-lucide-brick-wall", to: "/game/Maze" },
                 {
                     label: "Montyhall",
                     icon: "i-lucide-door-open",
@@ -50,12 +55,12 @@ const items = ref<NavigationMenuItem[][]>([
                     icon: "i-lucide-boxes",
                     to: "/game/Pascal",
                 },
-                { label: "Sorting", icon: "i-lucide-arrow-up-narrow-wide", to: "/game/Sort" }, 
+                { label: "Sorting", icon: "i-lucide-arrow-up-narrow-wide", to: "/game/Sort" },
             ],
         },
         {
             label: "Math",
-            icon: "i-lucide-calculator", 
+            icon: "i-lucide-calculator",
             children: [
                 {
                     label: "Invoice",
@@ -64,12 +69,12 @@ const items = ref<NavigationMenuItem[][]>([
                 },
                 {
                     label: "Trigonometry",
-                    icon: "i-lucide-axis-3d", 
+                    icon: "i-lucide-axis-3d",
                     to: "/math/Trigonometry",
                 },
                 {
                     label: "Goldbach 's conjecture",
-                    icon: "i-lucide-ruler", 
+                    icon: "i-lucide-ruler",
                     to: "/math/Goldbach",
                 },
                 {
@@ -86,7 +91,7 @@ const items = ref<NavigationMenuItem[][]>([
         },
         {
             label: "Tutorial",
-            icon: "i-lucide-book-open", 
+            icon: "i-lucide-book-open",
             children: [
                 {
                     label: "Installation",
@@ -95,7 +100,7 @@ const items = ref<NavigationMenuItem[][]>([
                 },
                 {
                     label: "Content",
-                    icon: "i-lucide-list", 
+                    icon: "i-lucide-list",
                     to: "/tutorial/content",
                 },
             ],
