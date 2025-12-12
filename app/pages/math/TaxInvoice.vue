@@ -180,13 +180,15 @@ const itemColumns: TableColumn<InvItem>[] = [
     },
 ]
 
-function onSelectInv(row: TableRow<Invoice>, e?: Event) {
+function onSelectInv(e?: Event, row?: TableRow<Invoice>) {
+    if (!row) return
     table.value!.tableApi.toggleAllRowsSelected(false)
     row.toggleSelected(true)
     invoice.value = invoices.value[row.index]!
 }
 
-function onSelectItem(row: TableRow<InvItem>, e?: Event) {
+function onSelectItem(e?: Event, row?: TableRow<InvItem>) {
+    if (!row) return
     tableItems.value!.tableApi.toggleAllRowsSelected(false)
     row.toggleSelected(true)
     invitem.value = invoice.value.items[row.index]!

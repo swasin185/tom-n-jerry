@@ -4,7 +4,7 @@
             <label for="rulerLength" class="font-medium">Even Number:</label>
             <UInputNumber
                 id="rulerLength"
-                v-model.number="evenNumber"
+                v-model="evenNumber"
                 :min=4
                 :max="maxEventNumber"
                 :step=2

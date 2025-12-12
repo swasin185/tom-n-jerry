@@ -9,7 +9,7 @@
         />
         <UInputNumber
             id="baseIn"
-            v-model.number="baseIn"
+            v-model="baseIn"
             class="w-24 font-bold"
             title="เลขฐาน"
             :min="2"
@@ -25,7 +25,7 @@
         />
         <UInputNumber
             id="baseOut"
-            v-model.number="baseOut"
+            v-model="baseOut"
             class="w-24 font-bold"
             title="เลขฐาน"
             :min="2"
