@@ -26,6 +26,9 @@ importers:
       vue:
         specifier: ^3.5.25
         version: 3.5.25(typescript@5.9.3)
+      vue-cheetah-grid:
+        specifier: ^2.1.0
+        version: 2.1.0(vue@3.5.25(typescript@5.9.3))
       vue-router:
         specifier: ^4.6.3
         version: 4.6.3(vue@3.5.25(typescript@5.9.3))
@@ -1910,6 +1913,9 @@ packages:
   check-error@2.1.1:
     resolution: {integrity: sha512-OAlb+T7V4Op9OwdkjmguYRqncdlx5JiofwOAUkmTF+jNdHwzTaTs4sRAGpzLF3oOz5xAyDGrPgeIDFQmDOTiJw==}
     engines: {node: '>= 16'}
+
+  cheetah-grid@2.1.1:
+    resolution: {integrity: sha512-H+4WOhmizrRhXg/60/rfWrvQZ3s3SbL1ugvBgfnPUoHUvdXaqhCkrSlm1XId2FP2wYeQ8Xx1ma2JYpJrIy/x0A==}
 
   chokidar@4.0.3:
     resolution: {integrity: sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==}
@@ -4019,6 +4025,11 @@ packages:
 
   vue-bundle-renderer@2.2.0:
     resolution: {integrity: sha512-sz/0WEdYH1KfaOm0XaBmRZOWgYTEvUDt6yPYaUzl4E52qzgWLlknaPPTTZmp6benaPTlQAI/hN1x3tAzZygycg==}
+
+  vue-cheetah-grid@2.1.0:
+    resolution: {integrity: sha512-iNwMHkORc+KO1TOeij/yvOXGWZETGOdudfnCis/oC9zhqF1UpccMrI9HTlN4sgkGv5evNJwsYbPgLGoIoycYHg==}
+    peerDependencies:
+      vue: ^3.0.0
 
   vue-component-type-helpers@3.1.8:
     resolution: {integrity: sha512-oaowlmEM6BaYY+8o+9D9cuzxpWQWHqHTMKakMxXu0E+UCIOMTljyIPO15jcnaCwJtZu/zWDotK7mOIHvWD9mcw==}
@@ -6137,6 +6148,8 @@ snapshots:
       pathval: 2.0.1
 
   check-error@2.1.1: {}
+
+  cheetah-grid@2.1.1: {}
 
   chokidar@4.0.3:
     dependencies:
@@ -8466,6 +8479,11 @@ snapshots:
   vue-bundle-renderer@2.2.0:
     dependencies:
       ufo: 1.6.1
+
+  vue-cheetah-grid@2.1.0(vue@3.5.25(typescript@5.9.3)):
+    dependencies:
+      cheetah-grid: 2.1.1
+      vue: 3.5.25(typescript@5.9.3)
 
   vue-component-type-helpers@3.1.8: {}
 
