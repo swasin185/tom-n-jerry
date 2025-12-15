@@ -24,11 +24,12 @@
             { accessorKey: 'quotient', header: 'Quotient' },
             { accessorKey: 'repeat', header: 'Repeat' },
         ]" :data="rows" class="w-[400px] h-[500px]" />
-        <c-grid v-else :data="rows" style="width: 400px; height: 500px" :frozen-row-count="1" :default-row-height="28">
-            <c-grid-column field="step">Step</c-grid-column>
-            <c-grid-column field="remainder">Remainder</c-grid-column>
-            <c-grid-column field="quotient">Quotient</c-grid-column>
-            <c-grid-column field="repeat">Repeat</c-grid-column>
+        <c-grid v-else :data="rows" style="width: 400px; height: 500px" :frozen-row-count="1" :default-row-height="28"
+            title="https://future-architect.github.io/cheetah-grid/documents/introduction/">
+            <c-grid-column field="step" :headerStyle="{ textAlign: 'center' }" :columnStyle="{ textAlign: 'center' }" width="60">Step</c-grid-column>
+            <c-grid-column field="remainder" :headerStyle="{ textAlign: 'right' }" :columnStyle="{ textAlign: 'right' }" width="80">Remain</c-grid-column>
+            <c-grid-column field="quotient" :headerStyle="{ textAlign: 'right' }" :columnStyle="{ textAlign: 'right' }" width="40">Dec</c-grid-column>
+            <c-grid-column field="repeat" :headerStyle="{ textAlign: 'center' }" :columnStyle="{ color: 'red', textAlign: 'center' }" width="40">Repeat</c-grid-column>
         </c-grid>
     </UCard>
 </template>
@@ -91,13 +92,8 @@ async function division() {
     rows.value = list
     console.timeEnd("division")
     console.time("render")
-    nextTick(() => {
-        requestAnimationFrame(() =>
-            // requestAnimationFrame(() =>
-            console.timeEnd('render')
-            // )
-        )
-    })
+    await nextTick()
+    requestAnimationFrame(() => console.timeEnd("render"))
 }
 </script>
 <style scoped></style>
