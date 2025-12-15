@@ -130,6 +130,7 @@ export default class Prime {
     public static createPrimeArray(x: number) {
         // const bx = parseInt(x)
         let lp = Prime.getLastPrime()
+        console.log("last prime = ", lp)
         while (lp < x) {
             lp += 2
             if (Prime.findDivisor(lp) == Prime.ONE) {
@@ -148,6 +149,7 @@ export default class Prime {
                 }
             }
         }
+
     }
 
     public static conjGoldbach(n: string): string[] {

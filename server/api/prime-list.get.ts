@@ -1,5 +1,5 @@
-import Prime from '../math/Prime'
+import Prime from "../math/Prime"
 
-export default eventHandler(async () => {   
+export default eventHandler(async () => {
     return Prime.getPrimes()
 })

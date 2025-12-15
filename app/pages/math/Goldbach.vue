@@ -6,11 +6,11 @@
                 id="rulerLength"
                 v-model="evenNumber"
                 :min=4
-                :max="maxEventNumber"
                 :step=2
                 class="w-32"
                 :title="maxEventNumber"
             />
+            <UButton @click="checkPrime">Check Prime</UButton>
         </div>
 
         <div
@@ -100,10 +100,17 @@ const bottomMarkers = computed(() => {
     return Array.from({ length: half.value }, (_, idx) => idx + 1)
 })
 
-watch(evenNumber, (val) => {
-    const max = maxEventNumber.value
-    if (val > max) evenNumber.value = max
-    else if (val < 4) evenNumber.value = 4
-    else if (val % 2 !== 0) evenNumber.value = val - 1
-})
+async function checkPrime() {
+    const n = window.prompt("Enter a number:")
+    const result = await $fetch<any>('/api/prime', {
+        query: {
+            x: n
+        }
+    })
+    primeNumbers.value = await $fetch<number[]>("/api/prime-list")
+    if (result.prime)   
+        window.alert(n + " is Prime")
+    else
+        window.alert(n + " is not Prime")
+}
 </script>
