@@ -3,7 +3,13 @@
         <h1>{{ coins }} เหรียญ</h1>
         <h2>{{ message }}</h2>
         <div>
-            <button class="card" v-for="card in cards" :key="card.id" @click="select(card)">
+            <button
+                class="card"
+                :class="{ selected: card.id == selected, 'no-hover': isAllOpened, closed: !card.isOpened }"
+                v-for="card in cards"
+                :key="card.id"
+                @click="select(card)"
+            >
                 <h3>{{ card.name }}</h3>
                 <img src="/assets/game/question.svg" v-show="!card.isOpened" />
                 <img src="/assets/game/coin.png" v-show="card.isOpened && card.id == coinCard" />
@@ -26,7 +32,7 @@
 useHead({
     title: "Monty Hall",
 })
-import { ref } from "vue"
+import { ref, computed } from "vue"
 
 const message = ref("เกมส์เปิดการ์ดหาเหรียญ")
 const coins = ref(10)
@@ -47,6 +53,8 @@ const cards = ref<Card[]>([
     { id: 1, name: "B", isOpened: true },
     { id: 2, name: "C", isOpened: true },
 ])
+
+const isAllOpened = computed(() => cards.value.every(c => c.isOpened))
 
 function select(card: Card): void {
     if (cards.value[coinCard]!.isOpened) {
@@ -102,17 +110,27 @@ img:hover {
     filter: drop-shadow(0 0 2em rgb(80, 0, 20));
 }
 
-.card:focus {
-    background: white;
-    color: darkred;
+.card:focus,
+.card:not(.no-hover):hover {
+    opacity: 0.8;
+    color: yellow;
+}
+
+.card.selected {
+    border-color: red;
+}
+
+.card.closed {
+   opacity: 0.4;
+   background: black;
 }
 
 .card {
     margin: 1em;
     height: 20em;
     width: 12em;
-    background: darkred;
-    color: white;
+    background: papayawhip;
+    color: gray;
     border-width: 0.2em;
     border-color: darkgrey;
     outline-color: red;

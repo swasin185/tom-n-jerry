@@ -1,10 +1,10 @@
 # Tom-n-Jerry
 
-> A Nuxt 4 Minimal Starter Project
+> A Nuxt 4 Demo Projects for Math and Science
 
 ## Project Overview
 
-This project is a minimal starter template built with [Nuxt 4](https://nuxt.com), featuring a modern set of tools including Tailwind CSS (via `@nuxt/ui`) and `nuxt-auth-utils`. It is designed to be a lightweight, high-performance foundation for building web applications.
+This project is a demo projects built with [Nuxt 4](https://nuxt.com), featuring a modern set of tools including Tailwind CSS (via `@nuxt/ui`) and `nuxt-auth-utils`. It is designed to be a lightweight, high-performance foundation for building web applications.
 
 ## Tech Stack
 
