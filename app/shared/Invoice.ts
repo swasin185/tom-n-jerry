@@ -1,5 +1,3 @@
-import { onScopeDispose } from "vue"
-
 export class Invoice {
     static VAT = 0.07
     static IncVAT = around(1 + Invoice.VAT)
