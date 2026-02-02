@@ -109,7 +109,7 @@ function select(card: Card): void {
 }
 
 function reset(): void {
-    if (coins.value < betAmount.value) {
+    if (coins.value == 0 || coins.value < betAmount.value) {
         message.value = "เหรียญไม่พอเดิมพัน"
         return
     }
@@ -131,7 +131,6 @@ function reset(): void {
     padding: 60px 20px;
     text-align: center;
     font-family: "Outfit", sans-serif;
-    background: radial-gradient(circle at center, #ffffff, #f7fafc);
     display: flex;
     flex-direction: column;
     align-items: center;
