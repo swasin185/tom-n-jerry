@@ -121,14 +121,15 @@ onMounted(() => {
     delayInput = document.getElementById("delayInput") as HTMLInputElement
     delaySlider = document.getElementById("delaySlider") as HTMLInputElement
     waiting = document.getElementById("waiting") as HTMLInputElement
-    maze = new Maze2("maze2", Number(sizeInput.value))
+    maze = new Maze2("maze2")
     genMaze()
 })
 
 function genMaze(): void {
-    maze.init(Number(sizeInput.value))
+    maze.init(Number(sizeInput.value), Number(sizeInput.value))
     maze.generate(Number(connInput.value), Number(delayInput.value))
 }
+
 function clickXY(event: MouseEvent): void {
     maze.clickXY(event)
 }

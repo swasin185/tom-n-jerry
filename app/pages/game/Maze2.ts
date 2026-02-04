@@ -15,7 +15,8 @@ export default class Maze2 {
     private static readonly BLUE = 2
     private static readonly ALPHA = 3
 
-    private size: number = 0
+    private cols: number = 0
+    private rows: number = 0
     private cvs: HTMLCanvasElement
     private ctx: CanvasRenderingContext2D
     private imgData: ImageData = new ImageData(1, 1)
@@ -30,7 +31,8 @@ export default class Maze2 {
     public _dx4: number = 0
     public _width4: number = 0
     public _width4_dx4: number = 0
-    public _size_2: number = 0
+    public _cols_2: number = 0
+    public _rows_2: number = 0
 
     private bgColor: number[] = [0, 0, 0]
     private wayColor: number[] = [0xff, 0xff, 0xff]
@@ -56,7 +58,7 @@ export default class Maze2 {
         return this.maxWalk
     }
 
-    constructor(canvasId: string = "canvas", size: number = 500) {
+    constructor(canvasId: string = "canvas") {
         this.colors[0] = this.wayColor
         for (let i = 1; i < this.colors.length; i++)
             this.colors[i] = [Math.round(i * 2.5), 205 - i * 2, 200]
@@ -70,24 +72,25 @@ export default class Maze2 {
         this.wayColor[Maze2.RED] = Number.parseInt(this.ctx.strokeStyle.substring(1, 3), 16)
         this.wayColor[Maze2.GREEN] = Number.parseInt(this.ctx.strokeStyle.substring(3, 5), 16)
         this.wayColor[Maze2.BLUE] = Number.parseInt(this.ctx.strokeStyle.substring(5, 7), 16)
-        this.init(size)
     }
 
-    public init(size: number): void {
+    public init(cols: number, rows: number): void {
         if (!this.running) {
             this.running = true
-            if (size % 2 == 0) size++
-            this.size = size
-            this.map = new Array(size)
-            for (let i = 0; i < size; i++) {
-                this.map[i] = new Array(size)
+            if (cols % 2 == 0) cols++
+            if (rows % 2 == 0) rows++
+            this.cols = cols
+            this.rows = rows
+            this.map = new Array(rows)
+            for (let i = 0; i < rows; i++) {
+                this.map[i] = new Array(cols)
                 this.map[i]!.fill(Maze2.WALL)
             }
             const normal = 500
-            this.dx = Math.ceil(normal / size)
-            this.dy = Math.ceil(normal / size)
-            this.width = size * this.dx
-            this.height = size * this.dy
+            this.dx = Math.ceil(normal / cols)
+            this.dy = Math.ceil(normal / rows)
+            this.width = cols * this.dx
+            this.height = rows * this.dy
             this.cvs.width = this.width
             this.cvs.height = this.height
             this.imgData = this.ctx.createImageData(this.width, this.height)
@@ -95,7 +98,8 @@ export default class Maze2 {
             this._dx4 = this.dx * 4
             this._width4 = this.width * 4
             this._width4_dx4 = this._width4 - this._dx4
-            this._size_2 = this.size - 2
+            this._cols_2 = this.cols - 2
+            this._rows_2 = this.rows - 2
             imgArr.fill(0x0)
             let remainder = 0
             for (let i = 0; i < this.imgData.data.length; i++) {
@@ -109,8 +113,8 @@ export default class Maze2 {
                         imgArr[(y * this.width + x) * 4 + 3] = this.dot
             this.maxWalk = 0
             this.startArea = new Coordinate(
-                Math.floor(this.size / 4) * 2 + 1,
-                Math.floor(this.size / 4) * 2 + 1,
+                Math.floor(this.rows / 4) * 2 + 1,
+                Math.floor(this.cols / 4) * 2 + 1,
             )
             this.paintMaze()
             this.running = false
@@ -132,16 +136,16 @@ export default class Maze2 {
 
     private hidePath(): void {
         const imgArr = this.imgData?.data
-        for (let i = 1; i <= this._size_2; i++)
-            for (let j = 1; j <= this._size_2; j++)
+        for (let i = 1; i <= this._rows_2; i++)
+            for (let j = 1; j <= this._cols_2; j++)
                 if (this.map[i]![j] == Maze2.WAY) this.paintArea(imgArr, i, j, this.bgColor)
         this.ctx.putImageData(this.imgData, 0, 0)
     }
 
     private paintMaze(): void {
         const imgArr = this.imgData?.data
-        for (let i = 1; i <= this._size_2; i++)
-            for (let j = 1; j <= this._size_2; j++)
+        for (let i = 1; i <= this._rows_2; i++)
+            for (let j = 1; j <= this._cols_2; j++)
                 if (this.map[i]![j] == Maze2.WAY) this.paintArea(imgArr, i, j, this.wayColor)
                 else if (this.map[i]![j] == Maze2.END) this.paintArea(imgArr, i, j, this.endColor)
                 else if (this.map[i]![j] == Maze2.WALL) this.paintArea(imgArr, i, j, this.bgColor)
@@ -154,8 +158,8 @@ export default class Maze2 {
 
     private paintPath(): void {
         const imgArr = this.imgData.data
-        for (let i = 1; i <= this._size_2; i++)
-            for (let j = 1; j <= this._size_2; j++) {
+        for (let i = 1; i <= this._rows_2; i++)
+            for (let j = 1; j <= this._cols_2; j++) {
                 if (this.map[i]![j]! > Maze2.WAY) {
                     const x = Math.ceil((this.map[i]![j]! / this.maxWalk) * 99)
                     this.paintArea(imgArr, i, j, this.colors[x]!)
@@ -225,9 +229,9 @@ export default class Maze2 {
             console.time("generate")
             this.teams = [
                 new Runner(this, 1, 1),
-                new Runner(this, 1, this._size_2),
-                new Runner(this, this._size_2, 1),
-                new Runner(this, this._size_2, this._size_2),
+                new Runner(this, 1, this._cols_2),
+                new Runner(this, this._rows_2, 1),
+                new Runner(this, this._rows_2, this._cols_2),
             ]
             while (
                 this.running &&
@@ -254,13 +258,13 @@ export default class Maze2 {
             }
 
             this.finishArea = new Coordinate(
-                Math.floor((Math.random() * this._size_2) / 2) * 2 + 1,
-                Math.floor((Math.random() * this._size_2) / 2) * 2 + 1,
+                Math.floor((Math.random() * this._rows_2) / 2) * 2 + 1,
+                Math.floor((Math.random() * this._cols_2) / 2) * 2 + 1,
             )
 
             connect -= 0.5
-            for (let i = 1; i <= this._size_2; i++)
-                for (let j = 1; j <= this._size_2; j++)
+            for (let i = 1; i <= this._rows_2; i++)
+                for (let j = 1; j <= this._cols_2; j++)
                     if (
                         !(i % 2 == 1 && j % 2 == 1) &&
                         this.map[i]![j] == Maze2.WALL &&
@@ -298,8 +302,8 @@ export default class Maze2 {
         this.path = []
         this.portals = []
         this.found = false
-        for (let i = 1; i <= this._size_2; i++)
-            for (let j = 1; j <= this._size_2; j++)
+        for (let i = 1; i <= this._rows_2; i++)
+            for (let j = 1; j <= this._cols_2; j++)
                 if (this.map[i]![j] != Maze2.WALL) this.map[i]![j] = Maze2.WAY
         //this.paintMaze();
         //this.paintPath();
@@ -320,9 +324,9 @@ export default class Maze2 {
             w = this.map[i]![j]!
             if (i > 1 && this.map[i - 1]![j]! > 0 && w - this.map[i - 1]![j]! > 0) i--
             else if (j > 1 && this.map[i]![j - 1]! > 0 && w - this.map[i]![j - 1]! > 0) j--
-            else if (i < this._size_2 && this.map[i + 1]![j]! > 0 && w - this.map[i + 1]![j]! > 0)
+            else if (i < this._rows_2 && this.map[i + 1]![j]! > 0 && w - this.map[i + 1]![j]! > 0)
                 i++
-            else if (j < this._size_2 && this.map[i]![j + 1]! > 0 && w - this.map[i]![j + 1]! > 0)
+            else if (j < this._cols_2 && this.map[i]![j + 1]! > 0 && w - this.map[i]![j + 1]! > 0)
                 j++
             else {
                 console.log("path Error", i, j, w)
@@ -596,14 +600,14 @@ class Runner {
                 direct += Maze2.WEST
             }
             if (
-                this.locate.i < this.maze._size_2 &&
+                this.locate.i < this.maze._rows_2 &&
                 map[this.locate.i + 2]![this.locate.j] == Maze2.WALL
             ) {
                 choice++
                 direct += Maze2.SOUTH
             }
             if (
-                this.locate.j < this.maze._size_2 &&
+                this.locate.j < this.maze._cols_2 &&
                 map[this.locate.i]![this.locate.j + 2] == Maze2.WALL
             ) {
                 choice++
@@ -667,13 +671,13 @@ class Runner {
         )
             map[this.locate.i]![this.locate.j - 1] = Maze2.END
         else if (
-            this.locate.i < this.maze._size_2 &&
+            this.locate.i < this.maze._rows_2 &&
             this.direction == Maze2.NORTH &&
             map[this.locate.i + 1]![this.locate.j] == Maze2.WALL
         )
             map[this.locate.i + 1]![this.locate.j] = Maze2.END
         else if (
-            this.locate.j < this.maze._size_2 &&
+            this.locate.j < this.maze._cols_2 &&
             this.direction == Maze2.WEST &&
             map[this.locate.i]![this.locate.j + 1] == Maze2.WALL
         )
@@ -698,7 +702,7 @@ class Runner {
         }
         if (
             this.direction == Maze2.NONE &&
-            this.locate.i < this.maze._size_2 &&
+            this.locate.i < this.maze._rows_2 &&
             this.isNextLocation(this.locate.i + 1, this.locate.j)
         ) {
             if (idx == 2) this.direction = Maze2.SOUTH
@@ -706,7 +710,7 @@ class Runner {
         }
         if (
             this.direction == Maze2.NONE &&
-            this.locate.j < this.maze._size_2 &&
+            this.locate.j < this.maze._cols_2 &&
             this.isNextLocation(this.locate.i, this.locate.j + 1)
         ) {
             if (idx == 3) this.direction = Maze2.EAST
