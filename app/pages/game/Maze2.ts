@@ -27,6 +27,7 @@ export default class Maze2 {
     private dx: number = 0
     private dy: number = 0
     private waiting: boolean = false
+    private pool: number[] = []
 
     public _dx4: number = 0
     public _width4: number = 0
@@ -302,6 +303,7 @@ export default class Maze2 {
         this.path = []
         this.portals = []
         this.found = false
+        this.pool = []
         for (let i = 1; i <= this._rows_2; i++)
             for (let j = 1; j <= this._cols_2; j++)
                 if (this.map[i]![j] != Maze2.WALL) this.map[i]![j] = Maze2.WAY
@@ -371,14 +373,24 @@ export default class Maze2 {
     private addNewRunner(walk: number): void {
         let i = 0
         let portal = this.portals[i]!
+        
         while (i < this.portals.length && walk < this.map[portal.i]![portal.j]!) {
-            this.teams.push(new Runner(this, portal.i, portal.j))
+            if (this.pool.length > 0) {
+                const idx = this.pool.shift()!
+                this.teams[idx]!.init(portal.i, portal.j)
+            } else {
+                this.teams.push(new Runner(this, portal.i, portal.j))
+            }
             portal = this.portals[++i]!
         }
         if (!this.waiting) this.portals.splice(0, i)
     }
 
-    public async solveMaze(delay: number = 0, waiting: boolean = true) {
+    public async solveMaze(
+        delay: number = 0,
+        waiting: boolean = true,
+        onProgress?: (active: number, total: number) => void,
+    ) {
         this.waiting = waiting
         this.reset()
         if (!this.running) {
@@ -388,8 +400,9 @@ export default class Maze2 {
             console.time("Optimal Path")
             let activeCount = 1
             while (this.running && activeCount > 0) {
+                if (onProgress) onProgress(activeCount, this.teams.length)
                 activeCount = 0
-                this.teams.forEach((runner) => {
+                this.teams.forEach((runner, index) => {
                     if (runner.isActive()) {
                         activeCount++
                         if (runner.getLocation().equals(this.finishArea)) {
@@ -415,8 +428,10 @@ export default class Maze2 {
                                 this.map[runner.getLocation().i]![runner.getLocation().j]!,
                             )
                         runner.move()
+                        if (!runner.isActive()) this.pool.push(index)
                     }
                 })
+
                 if (this.found && this.getPathLength() == 0) {
                     console.timeEnd("First Found")
                     console.log(
@@ -432,12 +447,8 @@ export default class Maze2 {
                     this.teams = [new Runner(this, this.startArea.i, this.startArea.j)]
                     activeCount = 1
                     this.running = true
-                } else if (activeCount < this.teams.length / 2) {
-                    //console.log("teams=", activeCount, this.teams.length);
-                    this.teams = this.teams.filter((runner) => {
-                        return runner.isActive()
-                    })
                 }
+                
                 if (delay > 0) {
                     this.paintPath()
                     await new Promise((r) => setTimeout(r, delay))
@@ -450,6 +461,7 @@ export default class Maze2 {
                 "Avg.Move",
                 Math.round(Runner.getTotalDistance() / Runner.getMaxId()),
             )
+            if (onProgress) onProgress(0, this.teams.length)
             this.paintMaze()
             this.paintPath()
             this.running = false
@@ -512,14 +524,21 @@ class Runner {
     constructor(maze: Maze2, i: number, j: number) {
         this.maze = maze
         this.locate = new Coordinate(i, j)
+        this.route = []
+        this.init(i, j)
+    }
+
+    public init(i: number, j: number): void {
+        this.locate.set(i, j)
         this.walk = this.maze.getMap()[this.locate.i]![this.locate.j]!
+        this.route = []
         if (this.walk == undefined || this.walk <= Maze2.WAY) {
             this.walk = 1
             this.maze.setMap(this.locate, this.walk)
         } else this.boundary = this.walk * Maze2.GOLDEN
-
-        this.route = []
         this.active = true
+        this.direction = Maze2.NONE
+        this.backward = false
     }
 
     public isBackward(): boolean {

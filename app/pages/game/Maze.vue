@@ -81,8 +81,40 @@
             type="button"
             class="button"
             value="Start"
-            @click="maze.solveMaze(Number(delayInput.value), waiting.checked)"
+            @click="solveMaze"
         />
+        <div
+            v-if="teamsSize > 0"
+            style="
+                margin-top: 10px;
+                border: 1px solid #000;
+                background-color: #333;
+                height: 20px;
+                width: 160px;
+                position: relative;
+                border-radius: 4px;
+                overflow: hidden;
+            "
+        >
+            <div
+                :style="{ width: progress + '%', height: '100%', backgroundColor: '#0354ae' }"
+            ></div>
+            <span
+                style="
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    text-align: center;
+                    font-size: 11px;
+                    color: cyan;
+                    line-height: 20px;
+                    font-weight: bold;
+                "
+            >
+                {{ activeRunners }} / {{ teamsSize }}
+            </span>
+        </div>
         <br />
     </div>
     <canvas
@@ -102,6 +134,7 @@ useHead({
     title: "Maze",
 })
 
+import { ref, computed } from "vue"
 import Maze2 from "./Maze2"
 
 let sizeInput: HTMLInputElement
@@ -112,6 +145,13 @@ let delayInput: HTMLInputElement
 let delaySlider: HTMLInputElement
 let waiting: HTMLInputElement
 let maze: Maze2
+
+const activeRunners = ref(0)
+const teamsSize = ref(0)
+const progress = computed(() =>
+    teamsSize.value > 0 ? (activeRunners.value / teamsSize.value) * 100 : 0,
+)
+
 
 onMounted(() => {
     sizeInput = document.getElementById("sizeInput") as HTMLInputElement
@@ -128,6 +168,13 @@ onMounted(() => {
 function genMaze(): void {
     maze.init(Number(sizeInput.value), Number(sizeInput.value))
     maze.generate(Number(connInput.value), Number(delayInput.value))
+}
+
+function solveMaze(): void {
+    maze.solveMaze(Number(delayInput.value), waiting.checked, (active, total) => {
+        activeRunners.value = active
+        teamsSize.value = total
+    })
 }
 
 function clickXY(event: MouseEvent): void {
