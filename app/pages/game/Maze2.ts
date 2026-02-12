@@ -27,11 +27,6 @@ export default class Maze2 {
     private dx: number = 0
     private dy: number = 0
     private waiting: boolean = false
-    private onStatsUpdate: (active: number, total: number) => void = () => {}
-
-    public setOnStatsUpdate(callback: (active: number, total: number) => void): void {
-        this.onStatsUpdate = callback
-    }
 
     public _dx4: number = 0
     public _width4: number = 0
@@ -57,17 +52,7 @@ export default class Maze2 {
     private running = false
     private maxWalk: number = 0
     private teams: Runner[] = []
-    private runnerPool: Runner[] = []
     private path: Coordinate[] = []
-
-    private createRunner(i: number, j: number): Runner {
-        if (this.runnerPool.length > 0) {
-            const runner = this.runnerPool.pop()!
-            runner.reuse(i, j)
-            return runner
-        }
-        return new Runner(this, i, j)
-    }
 
     public getMaxWalk(): number {
         return this.maxWalk
@@ -235,12 +220,6 @@ export default class Maze2 {
         return this.map
     }
 
-    private reportStats(): void {
-        const active = this.teams.filter((r) => r.isActive()).length
-        const total = Runner.getMaxId()
-        this.onStatsUpdate(active, total)
-    }
-
     public async generate(connect: number = 0.5, delay: number = 0) {
         connect = Number(connect)
         delay = Number(delay)
@@ -249,10 +228,10 @@ export default class Maze2 {
             this.running = true
             console.time("generate")
             this.teams = [
-                this.createRunner(1, 1),
-                this.createRunner(1, this._cols_2),
-                this.createRunner(this._rows_2, 1),
-                this.createRunner(this._rows_2, this._cols_2),
+                new Runner(this, 1, 1),
+                new Runner(this, 1, this._cols_2),
+                new Runner(this, this._rows_2, 1),
+                new Runner(this, this._rows_2, this._cols_2),
             ]
             while (
                 this.running &&
@@ -274,7 +253,6 @@ export default class Maze2 {
                 })
                 if (delay > 10) {
                     this.paintPath()
-                    this.reportStats()
                     await new Promise((r) => setTimeout(r, delay))
                 }
             }
@@ -321,7 +299,6 @@ export default class Maze2 {
         this.running = false
         this.maxWalk = 0
         this.teams = []
-        this.runnerPool = []
         this.path = []
         this.portals = []
         this.found = false
@@ -331,7 +308,6 @@ export default class Maze2 {
         //this.paintMaze();
         //this.paintPath();
         this.hidePath()
-        this.reportStats()
     }
 
     public isFounded(): boolean {
@@ -396,7 +372,7 @@ export default class Maze2 {
         let i = 0
         let portal = this.portals[i]!
         while (i < this.portals.length && walk < this.map[portal.i]![portal.j]!) {
-            this.teams.push(this.createRunner(portal.i, portal.j))
+            this.teams.push(new Runner(this, portal.i, portal.j))
             portal = this.portals[++i]!
         }
         if (!this.waiting) this.portals.splice(0, i)
@@ -407,7 +383,7 @@ export default class Maze2 {
         this.reset()
         if (!this.running) {
             this.running = true
-            this.teams = [this.createRunner(this.startArea.i, this.startArea.j)]
+            this.teams = [new Runner(this, this.startArea.i, this.startArea.j)]
             console.time("First Found")
             console.time("Optimal Path")
             let activeCount = 1
@@ -453,21 +429,17 @@ export default class Maze2 {
                     this.reset()
                     this.found = true
                     this.path = path
-                    this.teams = [this.createRunner(this.startArea.i, this.startArea.j)]
+                    this.teams = [new Runner(this, this.startArea.i, this.startArea.j)]
                     activeCount = 1
                     this.running = true
                 } else if (activeCount < this.teams.length / 2) {
                     //console.log("teams=", activeCount, this.teams.length);
-                    const nextTeams: Runner[] = []
-                    this.teams.forEach((runner) => {
-                        if (runner.isActive()) nextTeams.push(runner)
-                        else this.runnerPool.push(runner)
+                    this.teams = this.teams.filter((runner) => {
+                        return runner.isActive()
                     })
-                    this.teams = nextTeams
                 }
                 if (delay > 0) {
                     this.paintPath()
-                    this.reportStats()
                     await new Promise((r) => setTimeout(r, delay))
                 }
             }
@@ -548,20 +520,6 @@ class Runner {
 
         this.route = []
         this.active = true
-    }
-
-    public reuse(i: number, j: number): void {
-        this.id = ++Runner.autoid
-        this.locate.set(i, j)
-        this.walk = this.maze.getMap()[this.locate.i]![this.locate.j]!
-        if (this.walk == undefined || this.walk <= Maze2.WAY) {
-            this.walk = 1
-            this.maze.setMap(this.locate, this.walk)
-        } else this.boundary = this.walk * Maze2.GOLDEN
-        this.route = []
-        this.active = true
-        this.direction = Maze2.NONE
-        this.backward = false
     }
 
     public isBackward(): boolean {
