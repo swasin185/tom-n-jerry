@@ -72,6 +72,12 @@
         <label for="wait">waiting </label>
         <input type="checkbox" id="waiting" checked="true" />
         <hr />
+        <div class="progress-container">
+            <div class="progress-bar" :style="{ width: progressPercent + '%' }">
+            </div>
+            <span class="progress-label">{{ activeRunners }} / {{ totalRunners }}</span>
+        </div>
+        <hr />
         <input type="button" class="button" id="new" value="New" @click="genMaze()" />
         <br />
         <!-- <input type="button" class="button" id="reset" value="Reset" @click="maze.reset()" />
@@ -112,6 +118,11 @@ let delayInput: HTMLInputElement
 let delaySlider: HTMLInputElement
 let waiting: HTMLInputElement
 let maze: Maze2
+const activeRunners = ref(0)
+const totalRunners = ref(0)
+const progressPercent = computed(() =>
+    totalRunners.value > 0 ? (activeRunners.value / totalRunners.value) * 100 : 0
+)
 
 onMounted(() => {
     sizeInput = document.getElementById("sizeInput") as HTMLInputElement
@@ -122,6 +133,10 @@ onMounted(() => {
     delaySlider = document.getElementById("delaySlider") as HTMLInputElement
     waiting = document.getElementById("waiting") as HTMLInputElement
     maze = new Maze2("maze2")
+    maze.setOnStatsUpdate((active, total) => {
+        activeRunners.value = active
+        totalRunners.value = total
+    })
     genMaze()
 })
 
@@ -148,5 +163,34 @@ function clickXY(event: MouseEvent): void {
     cursor: pointer;
     font-size: 16px;
     width: 160px;
+}
+
+.progress-container {
+    position: relative;
+    height: 32px;
+    background: #333;
+    border-radius: 11px;
+    overflow: hidden;
+    border: 1px solid #555;
+    margin: 10px
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #0a84ff, #30d158);
+    border-radius: 11px;
+    transition: width 0.3s ease;
+}
+
+.progress-label {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
 }
 </style>
